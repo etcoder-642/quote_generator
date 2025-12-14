@@ -12,6 +12,7 @@ const quoteList = document.querySelector('.quote-list');
 const likedQuotes = document.querySelector('.liked-quotes');
 const heartIcon = document.querySelector('.heart-icon');
 const bookmarkIcon = document.querySelector('.bookmark-icon');
+const expandLikes = document.querySelector('.expand-likes');
 let isLiked = false;
 const quoteCollection = [];
 const likedQuoteCollection = [];
@@ -27,8 +28,10 @@ const displayQuotes = (array)=>{
     previousQuote.classList.add('previous-quote');
     quoteAuthor.classList.add('quote-author');
 
-    previousQuote.textContent = array[0];
-    quoteAuthor.textContent = array[1];
+    if(array){
+        previousQuote.textContent = array[0];
+        quoteAuthor.textContent = array[1];
+    }
 
     list.append(previousQuote, quoteAuthor);
     return list;
@@ -42,7 +45,13 @@ heartIcon.addEventListener('click', ()=>{
     if(isLiked === true){
         likedQuoteCollection.unshift(quoteCollection[0]);
         const list = displayQuotes(likedQuoteCollection[0]);
-        likedQuotes.prepend(list);
+        const childToRemove = likedQuotes.children[2];
+        if(likedQuotes.children.length <= 2){
+            likedQuotes.prepend(list);
+        }else{
+            childToRemove.remove();
+            likedQuotes.prepend(list);
+        }
     }else{
         likedQuoteCollection.splice(likedQuoteCollection.indexOf(quoteCollection[0]));
         const childToRemove = likedQuotes.children[0];
@@ -68,7 +77,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
         for(let i=0;i<storedQuotes.length;i++){
             if(quoteList.children.length <= 4){
                 quoteCollection.push(storedQuotes[i]);
-
                 const list = displayQuotes(quoteCollection[i]);
                 const childToRemove = quoteList.children[3];
                 if(quoteList.children.length <= 3){
@@ -83,7 +91,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
             for(let i=0;i<storedLikedQuotes.length;i++){
                 likedQuoteCollection.push(storedLikedQuotes[i]);
                 const list = displayQuotes(likedQuoteCollection[i]);
-                likedQuotes.prepend(list)
+                const childToRemove = likedQuotes.children[2];
+                if(likedQuotes.children.length <= 2){
+                    likedQuotes.prepend(list);
+                }else{
+                    childToRemove.remove();
+                    likedQuotes.prepend(list);
+                }
+                console.log(storedLikedQuotes)
             };
         }
     }
@@ -187,6 +202,25 @@ const mainFunc = ()=>{
         }
         quoteData();
 }
+
+const likedQuotesBox = document.querySelector('.liked-quotes-box');
+const likedQuotesList = document.querySelector('.liked-quotes-list');
+
+const displayLikedQuotes = ()=>{
+    likedQuotesBox.style.display = 'flex';
+    document.querySelector('.overlay').style.display = 'block';
+    likedQuotesList.innerHTML = ''
+    console.log('More Liked QUotes', likedQuoteCollection, likedQuotesList)
+    for(let i=0; i < likedQuoteCollection.length; i++){
+        const list = displayQuotes(likedQuoteCollection[i]);
+        likedQuotesList.prepend(list);
+    }
+}
+document.querySelector('.close-liked-box').addEventListener('click', ()=>{
+    likedQuotesBox.style.display = 'none';
+    document.querySelector('.overlay').style.display = 'none';
+})
+expandLikes.addEventListener('click', displayLikedQuotes)
 
 
 mainBtn.addEventListener('click', mainFunc);
