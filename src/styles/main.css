@@ -175,7 +175,7 @@ body {
     color: var(--secondary-color);
 }
 
-.liked-quotes-box {
+.liked-quotes-box, .saved-quotes-box {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -196,6 +196,28 @@ body {
     border-radius: 12px;
 }
 
+.saved-quotes-box {
+    display: none;
+    max-width: none;
+    min-width: 320px;
+    min-height: none;
+}
+
+.saved-quotes-content {
+    display: flex;
+    flex-direction: column;
+    margin: 24px 0px;
+}
+
+.saved-quotes-content * {
+    border: 1px solid white;
+    margin: 12px 0px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+}
+
 .liked-quotes-box li {
     border: 2px solid white;
 }
@@ -208,7 +230,7 @@ body {
     backdrop-filter: blur(5px); /* Blurs the background */
 }
 
-.close-liked-box {
+.close-liked-box, .close-saved-box {
   position: absolute;
   font-size: 40px;
   top: 0;
@@ -218,6 +240,6 @@ body {
 }
 
 
-.close-liked-box:hover {
+.close-liked-box:hover, .close-saved-box:hover {
     color: red;
 }

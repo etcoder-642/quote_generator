@@ -13,12 +13,23 @@ const likedQuotes = document.querySelector('.liked-quotes');
 const heartIcon = document.querySelector('.heart-icon');
 const bookmarkIcon = document.querySelector('.bookmark-icon');
 const expandLikes = document.querySelector('.expand-likes');
+const likedQuotesBox = document.querySelector('.liked-quotes-box');
+const likedQuotesList = document.querySelector('.liked-quotes-list');
+const savedQuotesBox = document.querySelector('.saved-quotes-box');
+const savedLibraryBtn = document.querySelector('.saved-library-btn');
+const savedContentList = document.querySelector('.saved-content-list');
+
+let libraryTitles = document.querySelector('.library-title');
+let libraryDesc = document.querySelector('.library-desc');
+
 let isLiked = false;
+let isSaved = false;
 const quoteCollection = [];
 const likedQuoteCollection = [];
+const savedLibraries = [];
 
 
-// To save and display previously generated quotes
+// To display quotes, it takes an array of quotes and returns a list element which contains the quote and author
 const displayQuotes = (array)=>{
     let list = document.createElement('li');
     list.classList.add('previous-quotes-list');
@@ -37,7 +48,7 @@ const displayQuotes = (array)=>{
     return list;
 }
 
-//.. To toggle between the solid and regular for the heart and bookmark icons
+// Things that happen when a quote is liked
 
 heartIcon.addEventListener('click', ()=>{
     heartIcon.classList.toggle('solid');
@@ -62,16 +73,59 @@ heartIcon.addEventListener('click', ()=>{
     console.log('Liked Quotes', likedQuoteCollection);
 })
 
+const displaySaved = (obj)=>{
+    const list = document.createElement('li');
+    list.classList.add('previous-quotes-list')
+    list.textContent = obj.title;
+    console.log(list, obj)
+    return list;
+}
+
+// Things that happen 
+
 bookmarkIcon.addEventListener('click', ()=>{
     bookmarkIcon.classList.toggle('solid');
+    isSaved = !isSaved;
+
+    if(isSaved === true){
+        console.log(savedLibraries)
+        savedQuotesBox.style.display = 'block';
+        savedContentList.innerHTML = ''
+        for(let i=0;i<savedLibraries.length;i++){
+            savedContentList.append(displaySaved(savedLibraries[i]))
+        }
+    }
+});
+
+
+savedLibraryBtn.addEventListener('click', (e)=>{
+    if(libraryDesc.checkValidity() && libraryTitles.checkValidity()){
+        e.preventDefault();
+        savedLibraries.push({
+            'id': crypto.randomUUID(),
+            'title': libraryTitles.value,
+            'description': libraryDesc.value,
+            'quotes': []
+        })
+    }
+    console.log(savedLibraries);
+    localStorage.setItem('savedItems', '');
+    localStorage.setItem('savedItems', JSON.stringify(savedLibraries));
+})
+
+
+document.querySelector('.close-saved-box').addEventListener('click', ()=>{
+    savedQuotesBox.style.display = 'none';
 })
 
 // things that must be done when the page is loaded
 document.addEventListener('DOMContentLoaded', ()=>{
     let storedQuotes = [];
     let storedLikedQuotes = [];
+    let storedSavedQuotes = [];
     storedQuotes = JSON.parse(localStorage.getItem('quotes'));
     storedLikedQuotes = JSON.parse(localStorage.getItem('likedQuotes'));
+    storedSavedQuotes = JSON.parse(localStorage.getItem('savedItems'));
 
     if(storedQuotes){
         for(let i=0;i<storedQuotes.length;i++){
@@ -87,24 +141,28 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 }
             }            
         }
-        if(storedLikedQuotes){
-            for(let i=0;i<storedLikedQuotes.length;i++){
-                likedQuoteCollection.push(storedLikedQuotes[i]);
-                const list = displayQuotes(likedQuoteCollection[i]);
-                const childToRemove = likedQuotes.children[2];
-                if(likedQuotes.children.length <= 2){
-                    likedQuotes.prepend(list);
-                }else{
-                    childToRemove.remove();
-                    likedQuotes.prepend(list);
-                }
-                console.log(storedLikedQuotes)
-            };
+    }
+    if(storedLikedQuotes){
+        for(let i=0;i<storedLikedQuotes.length;i++){
+            likedQuoteCollection.push(storedLikedQuotes[i]);
+            const list = displayQuotes(likedQuoteCollection[i]);
+            const childToRemove = likedQuotes.children[2];
+            if(likedQuotes.children.length <= 2){
+                likedQuotes.prepend(list);
+            }else{
+                childToRemove.remove();
+                likedQuotes.prepend(list);
+            }
+        };
+    }
+    if(storedSavedQuotes){
+        for(let i=0;i<storedSavedQuotes.length;i++){
+            savedLibraries.push(storedSavedQuotes[i]);
         }
     }
 })
 
-
+// Things that happen when the main 'Generate Quote' is clicked
 const mainFunc = ()=>{
 
     function responder(responseData){
@@ -203,9 +261,7 @@ const mainFunc = ()=>{
         quoteData();
 }
 
-const likedQuotesBox = document.querySelector('.liked-quotes-box');
-const likedQuotesList = document.querySelector('.liked-quotes-list');
-
+// things that happen when the 'More' button under Liked Quotes is Clicked
 const displayLikedQuotes = ()=>{
     likedQuotesBox.style.display = 'flex';
     document.querySelector('.overlay').style.display = 'block';
