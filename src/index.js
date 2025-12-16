@@ -169,8 +169,16 @@ const displaySavedQuotes = (array)=>{
     groupHeader.textContent = array.title;
     for(let i=0; i<array.quotes.length;i++){
         let list = document.createElement('li');
+        let quote = document.createElement('div');
+        let author = document.createElement('div');
+
         list.classList.add('previous-quotes-list');
-        list.textContent = array.quotes[i][0];
+        quote.textContent = array.quotes[i][0];
+        author.textContent = array.quotes[i][1];
+        quote.classList.add('previous-quote');
+        author.classList.add('quote-author');
+
+        list.append(quote, author)
         content.appendChild(list);
     }
     group.append(groupHeader, content);
