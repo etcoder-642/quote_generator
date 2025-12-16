@@ -6,9 +6,11 @@
 
 :root {
     --primary-color: purple;
-    --secondary-color: rgb(158, 4, 158);
+    --secondary-color: rgb(180, 5, 180);
     --teritiary-color: rebeccapurple;
-
+    --light-purple: rgb(228, 57, 228);
+    --button-shadow: 0 0 24px 0px var(--secondary-color);
+    --button-shadow-hover:0 0 32px 2px var(--light-purple);
 }
 
 li {
@@ -22,22 +24,20 @@ li {
     padding: 12px;
     border: none;
     background-color: var(--primary-color);
+    box-shadow: var(--button-shadow);
     color: white;
     width: 15%;
 }
 
 .main-btn:hover {
     background-color: var(--secondary-color);
-}
-
-body {
-    height: 100vh;
+    box-shadow: var(--button-shadow-hover);
 }
 
 .main {
     display: flex;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
 }
 
 .sidebar {
@@ -53,8 +53,8 @@ body {
 
 .main-container header {
     width: 100%;
-    height: 100%;
-    background-image: linear-gradient(45deg, var(--secondary-color), var(--teritiary-color));
+    height: 13%;
+    background-image: linear-gradient(45deg, var(--light-purple), var(--teritiary-color));
     padding: 48px 0;
     display: flex;
     align-items: center;
@@ -165,13 +165,13 @@ body {
     max-width: 25%;
 }
 
-.expand-likes {
-    margin-left: 12px;
+.ad-lines {
+    margin: 8px 12px 14px 4px;
     color: blue;
     cursor: pointer;
 }
 
-.expand-likes:hover {
+.ad-lines:hover {
     color: var(--secondary-color);
 }
 
@@ -203,19 +203,46 @@ body {
     min-height: none;
 }
 
+.saved-quotes-box > header {
+    width: fit-content;
+    margin: auto;
+}
+
+.saved-quotes-box > header:first-child {
+    margin-top: 32px;
+}
+
+.saved-quotes-box > header:last-child {
+    border-top: 1px solid #fff;
+    margin-top: 32px;
+}
+
 .saved-quotes-content {
     display: flex;
     flex-direction: column;
-    margin: 24px 0px;
+    margin: 12px 0px;
+    border: 1px solid white;
+    padding: 4px;
 }
 
 .saved-quotes-content * {
-    border: 1px solid white;
-    margin: 12px 0px;
-    padding: 4px;
+    margin: 4px 0px;
     display: flex;
     flex-direction: column;
     font-size: 16px;
+}
+
+.saved-library-btn {
+    margin-top: 22px;
+}
+
+.saved-content-list li {
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+.saved-content-list li:hover {
+    border-color: var(--light-purple);
 }
 
 .liked-quotes-box li {
@@ -230,7 +257,7 @@ body {
     backdrop-filter: blur(5px); /* Blurs the background */
 }
 
-.close-liked-box, .close-saved-box {
+.close-liked-box, .close-saved-box, .close-library-box {
   position: absolute;
   font-size: 40px;
   top: 0;
@@ -240,6 +267,36 @@ body {
 }
 
 
-.close-liked-box:hover, .close-saved-box:hover {
+.close-liked-box:hover, .close-saved-box:hover, .close-library-box:hover {
     color: red;
+}
+
+.quote-library-list {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: auto;
+    padding: 16px;
+
+    min-width: 80%;
+    max-width: 2000px;
+    min-height: 400px;
+    display: none;
+    overflow-y: auto;
+    max-height: 90vh;
+
+    background: var(--secondary-color);
+    color: white;
+    border-radius: 12px;
+}   
+
+.quotes-grouplist {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid white;
+    height: fit-content;
+    padding: 8px;
+    margin: 8px;
+    margin-top: 32px;
 }

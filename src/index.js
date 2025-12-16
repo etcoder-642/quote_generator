@@ -1,4 +1,6 @@
-import "./styles/main.css"
+import "./styles/main.css";
+import Toastify from 'toastify-js';
+import "toastify-js/src/toastify.css" // Don't forget the CSS!
 
 const mainBtn = document.querySelector('.main-btn');
 const quoteSection = document.querySelector('.main-section');
@@ -18,12 +20,16 @@ const likedQuotesList = document.querySelector('.liked-quotes-list');
 const savedQuotesBox = document.querySelector('.saved-quotes-box');
 const savedLibraryBtn = document.querySelector('.saved-library-btn');
 const savedContentList = document.querySelector('.saved-content-list');
+const overlay = document.querySelector('.overlay');
+const moreQuotes = document.querySelector('.more-saved-quotes');
+const quoteLibraryList = document.querySelector('.quote-library-list');
 
 let libraryTitles = document.querySelector('.library-title');
 let libraryDesc = document.querySelector('.library-desc');
 
 let isLiked = false;
 let isSaved = false;
+let isSavedDisplayed = false;
 const quoteCollection = [];
 const likedQuoteCollection = [];
 const savedLibraries = [];
@@ -64,7 +70,8 @@ heartIcon.addEventListener('click', ()=>{
             likedQuotes.prepend(list);
         }
     }else{
-        likedQuoteCollection.splice(likedQuoteCollection.indexOf(quoteCollection[0]));
+        likedQuoteCollection.splice(likedQuoteCollection.indexOf(quoteCollection[0]),1);
+        console.log(likedQuoteCollection)
         const childToRemove = likedQuotes.children[0];
         childToRemove.remove();
     }
@@ -75,9 +82,11 @@ heartIcon.addEventListener('click', ()=>{
 
 const displaySaved = (obj)=>{
     const list = document.createElement('li');
-    list.classList.add('previous-quotes-list')
+    list.classList.add('previous-quotes-list');
+    list.classList.add('saved-quotes-li')
     list.textContent = obj.title;
-    console.log(list, obj)
+    list.setAttribute('data-element-id', obj.id);
+    console.log(list, obj);
     return list;
 }
 
@@ -90,10 +99,12 @@ bookmarkIcon.addEventListener('click', ()=>{
     if(isSaved === true){
         console.log(savedLibraries)
         savedQuotesBox.style.display = 'block';
+        overlay.style.display = 'block';
         savedContentList.innerHTML = ''
         for(let i=0;i<savedLibraries.length;i++){
             savedContentList.append(displaySaved(savedLibraries[i]))
         }
+        console.log(savedContentList);
     }
 });
 
@@ -116,7 +127,76 @@ savedLibraryBtn.addEventListener('click', (e)=>{
 
 document.querySelector('.close-saved-box').addEventListener('click', ()=>{
     savedQuotesBox.style.display = 'none';
+    overlay.style.display = 'none';
+
+    if(isSaved){
+        bookmarkIcon.classList.toggle('solid');
+        isSaved = !isSaved;
+    }
+    
 })
+
+
+savedQuotesBox.addEventListener('click', (e)=>{
+    if(e.target.classList.contains('saved-quotes-li')){
+    for(let i=0;i<savedLibraries.length;i++){
+        if(savedLibraries[i].id === e.target.dataset.elementId){
+            savedLibraries[i].quotes.push(quoteCollection[0]);
+        }
+    }
+    localStorage.setItem('savedItems', '');
+    localStorage.setItem('savedItems', JSON.stringify(savedLibraries));
+
+    Toastify({text: 'Saved Successfully!', 
+        duration: 3000,
+        position: 'center',
+        style: {
+            background: 'var(--secondary-color)',
+        }
+    }).showToast();
+    savedQuotesBox.style.display = 'none';
+    overlay.style.display = 'none';
+    console.log(savedLibraries)
+    }
+})
+
+
+const displaySavedQuotes = (array)=>{
+    let group = document.createElement('div');
+    group.classList.add('quotes-grouplist')
+    let groupHeader = document.createElement('header');
+    let content = document.createElement('ul');
+    groupHeader.textContent = array.title;
+    for(let i=0; i<array.quotes.length;i++){
+        let list = document.createElement('li');
+        list.classList.add('previous-quotes-list');
+        list.textContent = array.quotes[i][0];
+        content.appendChild(list);
+    }
+    group.append(groupHeader, content);
+    return group;
+}
+
+moreQuotes.addEventListener('click', ()=>{
+    quoteLibraryList.style.display = 'flex';
+
+    if(isSavedDisplayed === false){
+       for(let i=0; i<savedLibraries.length;i++){
+           const groupList = displaySavedQuotes(savedLibraries[i]);
+           console.log(groupList);
+           quoteLibraryList.append(groupList);
+        }
+    }
+    isSavedDisplayed = true;
+    overlay.style.display = 'block';
+})
+
+document.querySelector('.close-library-box').addEventListener('click', ()=>{
+    quoteLibraryList.style.display = 'none';
+    overlay.style.display = 'none';
+    
+})
+
 
 // things that must be done when the page is loaded
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -194,6 +274,10 @@ const mainFunc = ()=>{
                     heartIcon.classList.toggle('solid');
                     isLiked = !isLiked;
                 }
+                if(isSaved === true){
+                    bookmarkIcon.classList.toggle('solid');
+                    isSaved = !isSaved;
+                }
 
     }
 
@@ -264,7 +348,7 @@ const mainFunc = ()=>{
 // things that happen when the 'More' button under Liked Quotes is Clicked
 const displayLikedQuotes = ()=>{
     likedQuotesBox.style.display = 'flex';
-    document.querySelector('.overlay').style.display = 'block';
+    overlay.style.display = 'block';
     likedQuotesList.innerHTML = ''
     console.log('More Liked QUotes', likedQuoteCollection, likedQuotesList)
     for(let i=0; i < likedQuoteCollection.length; i++){

@@ -63,19 +63,13 @@
         <div class="sidebar">
             <h2>Previously generated Quotes</h2>
             <ul class="quote-list">
-                <a href="http://">More</a>
             </ul>
             <h2>Favourite Quotes</h2>
             <ul class="liked-quotes">
             </ul>
-            <div class="expand-likes">More</div>
+            <div class="expand-likes ad-lines">More</div>
             <h2>Saved Quotes</h2>
-            <ul>
-                <li>...</li>
-                <li>...</li>
-                <li>...</li>
-                <a href="http://">More</a>
-            </ul>
+            <div class="more-saved-quotes ad-lines">See Saved Quotes</div>
         </div>
     </div>
     <div class="liked-quotes-box">
@@ -86,14 +80,22 @@
     </div>
     <form class="saved-quotes-box">
         <div class="close-saved-box">&times;</div>
-        <header><b>Existing Libraries</b></header>
-        <ul class="saved-content-list"></ul>
-        <header><b>Create Library</b></header>
-        <div class="saved-quotes-content">
-            <div>Title<input type="text" class="library-title"></div>
-            <div>Description <input type="text" class="library-desc"></div>
-            <button class="saved-library-btn" type="submit">Create Library</button>
+        <div class="top-content-saved">
+            <header><b>Existing Libraries</b></header>
+            <ul class="saved-content-list"></ul>
+        </div>
+        <header style="font-size: 24px;">OR</header>
+        <div class="bottom-content-saved">
+            <header><b>Create Library</b></header>
+            <div class="saved-quotes-content">
+                <div>Title<input type="text" class="library-title"></div>
+                <div>Description <input type="text" class="library-desc"></div>
+                <button class="saved-library-btn" type="submit">Create Library</button>
+            </div>
         </div>
     </form>
+    <ul class="quote-library-list">
+        <div class="close-library-box">&times;</div>
+    </ul>
 </body>
 </html>
