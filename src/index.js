@@ -5,7 +5,6 @@ import "toastify-js/src/toastify.css" // Don't forget the CSS!
 import { display } from "./utils/display";
 
 const mainBtn = document.querySelector('.main-btn');
-const quoteSection = document.querySelector('.main-section');
 const quote = document.querySelector('.quote');
 const author = document.querySelector('.author');
 const categories = document.querySelector('.categories');
@@ -20,7 +19,6 @@ const expandLikes = document.querySelector('.expand-likes');
 const savedQuotesBox = document.querySelector('.saved-quotes-box');
 const savedLibraryBtn = document.querySelector('.saved-library-btn');
 const savedContentList = document.querySelector('.saved-content-list');
-const overlay = document.querySelector('.overlay');
 const moreQuotes = document.querySelector('.more-saved-quotes');
 const quoteLibraryList = document.querySelector('.quote-library-list');
 
@@ -44,40 +42,29 @@ heartIcon.addEventListener('click', ()=>{
     if(isLiked === true){
         likedQuoteCollection.unshift(quoteCollection[0]);
         const list = display.displayQuotes(likedQuoteCollection[0]);
-        const childToRemove = likedQuotes.children[2];
-        if(likedQuotes.children.length <= 2){
-            likedQuotes.prepend(list);
-        }else{
-            childToRemove.remove();
-            likedQuotes.prepend(list);
-        }
+        display.addLikedQuotes(list);
     }else{
         likedQuoteCollection.splice(likedQuoteCollection.indexOf(quoteCollection[0]),1);
-        console.log(likedQuoteCollection)
-        const childToRemove = likedQuotes.children[0];
-        childToRemove.remove();
+        display.removeLikedQuote();
     }
     localStorage.setItem('likedQuotes', '');
     localStorage.setItem('likedQuotes', JSON.stringify(likedQuoteCollection));
-    console.log('Liked Quotes', likedQuoteCollection);
 })
 
 
 // Things that happen 
 
 bookmarkIcon.addEventListener('click', ()=>{
-    bookmarkIcon.classList.toggle('solid');
     isSaved = !isSaved;
 
     if(isSaved === true){
-        console.log(savedLibraries)
-        savedQuotesBox.style.display = 'block';
-        overlay.style.display = 'block';
+        console.log(savedLibraries);
+        display.popUpMode_bookmark();
+
         savedContentList.innerHTML = ''
         for(let i=0;i<savedLibraries.length;i++){
-            savedContentList.append(display.displayLibraryList(savedLibraries[i]))
+            display.addLibraryList(savedContentList, savedLibraries[i]);
         }
-        console.log(savedContentList);
     }
 });
 
@@ -92,18 +79,16 @@ savedLibraryBtn.addEventListener('click', (e)=>{
             'quotes': []
         })
     }
-    console.log(savedLibraries);
     localStorage.setItem('savedItems', '');
     localStorage.setItem('savedItems', JSON.stringify(savedLibraries));
 })
 
 
 document.querySelector('.close-saved-box').addEventListener('click', ()=>{
-    savedQuotesBox.style.display = 'none';
-    overlay.style.display = 'none';
+    display.normalMode_bookmark();
 
     if(isSaved){
-        bookmarkIcon.classList.toggle('solid');
+        display.toggleBookmark();
         isSaved = !isSaved;
     }
     
@@ -120,22 +105,14 @@ savedQuotesBox.addEventListener('click', (e)=>{
     localStorage.setItem('savedItems', '');
     localStorage.setItem('savedItems', JSON.stringify(savedLibraries));
 
-    Toastify({text: 'Saved Successfully!', 
-        duration: 3000,
-        position: 'center',
-        style: {
-            background: 'var(--secondary-color)',
-        }
-    }).showToast();
-    savedQuotesBox.style.display = 'none';
-    overlay.style.display = 'none';
-    console.log(savedLibraries)
+    display.normalMode_bookmark();
+    display.displayToast();
     }
 })
 
 
 moreQuotes.addEventListener('click', ()=>{
-    quoteLibraryList.style.display = 'flex';
+    display.popUpMode_list();
 
     if(isSavedDisplayed === false){
        for(let i=0; i<savedLibraries.length;i++){
@@ -145,13 +122,10 @@ moreQuotes.addEventListener('click', ()=>{
         }
     }
     isSavedDisplayed = true;
-    overlay.style.display = 'block';
 })
 
 document.querySelector('.close-library-box').addEventListener('click', ()=>{
-    quoteLibraryList.style.display = 'none';
-    overlay.style.display = 'none';
-    
+    display.normalMode_list();
 })
 
 

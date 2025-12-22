@@ -1,27 +1,39 @@
-export const display = (()=>{
+export const display = (() => {
     const savedQuotesBox = document.querySelector('.saved-quotes-box');
     const overlay = document.querySelector('.overlay');
     const likedQuotesBox = document.querySelector('.liked-quotes-box');
     const likedQuotesList = document.querySelector('.liked-quotes-list');
+    const quoteLibraryList = document.querySelector('.quote-library-list');
+    const likedQuotes = document.querySelector('.liked-quotes');
+    const heartIcon = document.querySelector('.heart-icon');
+    const bookmarkIcon = document.querySelector('.bookmark-icon');
 
     return {
-        popUpMode_bookmark: function() {
+        popUpMode_list: function () {
+            quoteLibraryList.style.display = 'flex';
+            overlay.style.display = 'block';
+        },
+        normalMode_list: function () {
+            quoteLibraryList.style.display = 'none';
+            overlay.style.display = 'none';
+        },
+        popUpMode_bookmark: function () {
             savedQuotesBox.style.display = 'block';
             overlay.style.display = 'block';
         },
-        normalMode_bookmark: function() {
+        normalMode_bookmark: function () {
             savedQuotesBox.style.display = 'none';
             overlay.style.display = 'none';
         },
-        popUpMode_liked: function() {
+        popUpMode_liked: function () {
             likedQuotesBox.style.display = 'flex';
             overlay.style.display = 'block';
         },
-        normalMode_liked: function() {
+        normalMode_liked: function () {
             likedQuotesBox.style.display = 'none';
             overlay.style.display = 'none';
         },
-        displayQuotes: function(array){
+        displayQuotes: function (array) {
             let list = document.createElement('li');
             list.classList.add('previous-quotes-list');
 
@@ -30,7 +42,7 @@ export const display = (()=>{
             previousQuote.classList.add('previous-quote');
             quoteAuthor.classList.add('quote-author');
 
-            if(array){
+            if (array) {
                 previousQuote.textContent = array[0];
                 quoteAuthor.textContent = array[1];
             }
@@ -38,7 +50,7 @@ export const display = (()=>{
             list.append(previousQuote, quoteAuthor);
             return list;
         },
-        displayLibraryList: function(obj){
+        displayLibraryList: function (obj) {
             const list = document.createElement('li');
             list.classList.add('previous-quotes-list');
             list.classList.add('saved-quotes-li')
@@ -47,18 +59,18 @@ export const display = (()=>{
             console.log(list, obj);
             return list;
         },
-        displaySavedQuotes: function(array){
+        displaySavedQuotes: function (array) {
             let group = document.createElement('div');
             group.classList.add('quotes-grouplist')
             let groupHeader = document.createElement('header');
             let content = document.createElement('ul');
             groupHeader.textContent = array.title;
 
-            for(let i=0; i<array.quotes.length;i++){
+            for (let i = 0; i < array.quotes.length; i++) {
                 let list = document.createElement('li');
                 let quote = document.createElement('div');
                 let author = document.createElement('div');
-        
+
                 list.classList.add('previous-quotes-list');
                 quote.textContent = array.quotes[i][0];
                 author.textContent = array.quotes[i][1];
@@ -71,15 +83,47 @@ export const display = (()=>{
             group.append(groupHeader, content);
             return group;
         },
-        displayLikedQuotes: function(array){
+        displayLikedQuotes: function (array) {
             display.popUpMode_liked();
             likedQuotesList.innerHTML = '';
             console.log('More Liked QUotes', array, likedQuotesList);
 
-            for(let i=0; i < array.length; i++){
-               const list = display.displayQuotes(array[i]);
-               likedQuotesList.prepend(list);
-           }    
+            for (let i = 0; i < array.length; i++) {
+                const list = display.displayQuotes(array[i]);
+                likedQuotesList.prepend(list);
+            }
+        },
+        addLikedQuotes: function (element) {
+            const childToRemove = likedQuotes.children[2];
+            if (likedQuotes.children.length <= 2) {
+                likedQuotes.prepend(element);
+            } else {
+                childToRemove.remove();
+                likedQuotes.prepend(element);
+            }
+        },
+        removeLikedQuote: function () {
+            const childToRemove = likedQuotes.children[0];
+            childToRemove.remove();
+        },
+        toggleBookmark: function () {
+            bookmarkIcon.classList.toggle('solid');
+        },
+        toggleLiked: function () {
+            heartIcon.classList.toggle('solid');
+        },
+        addLibraryList: function (list, array) {
+            list.append(display.displayLibraryList(array[i]))
+        },
+        displayToast: function () {
+            Toastify({
+                text: 'Saved Successfully!',
+                duration: 3000,
+                position: 'center',
+                style: {
+                    background: 'var(--secondary-color)',
+                }
+            }).showToast();
         }
     }
 })()
