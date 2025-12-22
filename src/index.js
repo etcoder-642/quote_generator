@@ -2,6 +2,8 @@ import "./styles/main.css";
 import Toastify from 'toastify-js';
 import "toastify-js/src/toastify.css" // Don't forget the CSS!
 
+import { display } from "./utils/display";
+
 const mainBtn = document.querySelector('.main-btn');
 const quoteSection = document.querySelector('.main-section');
 const quote = document.querySelector('.quote');
@@ -15,8 +17,6 @@ const likedQuotes = document.querySelector('.liked-quotes');
 const heartIcon = document.querySelector('.heart-icon');
 const bookmarkIcon = document.querySelector('.bookmark-icon');
 const expandLikes = document.querySelector('.expand-likes');
-const likedQuotesBox = document.querySelector('.liked-quotes-box');
-const likedQuotesList = document.querySelector('.liked-quotes-list');
 const savedQuotesBox = document.querySelector('.saved-quotes-box');
 const savedLibraryBtn = document.querySelector('.saved-library-btn');
 const savedContentList = document.querySelector('.saved-content-list');
@@ -35,24 +35,6 @@ const likedQuoteCollection = [];
 const savedLibraries = [];
 
 
-// To display quotes, it takes an array of quotes and returns a list element which contains the quote and author
-const displayQuotes = (array)=>{
-    let list = document.createElement('li');
-    list.classList.add('previous-quotes-list');
-
-    let previousQuote = document.createElement('div');
-    let quoteAuthor = document.createElement('div');
-    previousQuote.classList.add('previous-quote');
-    quoteAuthor.classList.add('quote-author');
-
-    if(array){
-        previousQuote.textContent = array[0];
-        quoteAuthor.textContent = array[1];
-    }
-
-    list.append(previousQuote, quoteAuthor);
-    return list;
-}
 
 // Things that happen when a quote is liked
 
@@ -61,7 +43,7 @@ heartIcon.addEventListener('click', ()=>{
     isLiked = !isLiked;
     if(isLiked === true){
         likedQuoteCollection.unshift(quoteCollection[0]);
-        const list = displayQuotes(likedQuoteCollection[0]);
+        const list = display.displayQuotes(likedQuoteCollection[0]);
         const childToRemove = likedQuotes.children[2];
         if(likedQuotes.children.length <= 2){
             likedQuotes.prepend(list);
@@ -80,15 +62,6 @@ heartIcon.addEventListener('click', ()=>{
     console.log('Liked Quotes', likedQuoteCollection);
 })
 
-const displaySaved = (obj)=>{
-    const list = document.createElement('li');
-    list.classList.add('previous-quotes-list');
-    list.classList.add('saved-quotes-li')
-    list.textContent = obj.title;
-    list.setAttribute('data-element-id', obj.id);
-    console.log(list, obj);
-    return list;
-}
 
 // Things that happen 
 
@@ -102,7 +75,7 @@ bookmarkIcon.addEventListener('click', ()=>{
         overlay.style.display = 'block';
         savedContentList.innerHTML = ''
         for(let i=0;i<savedLibraries.length;i++){
-            savedContentList.append(displaySaved(savedLibraries[i]))
+            savedContentList.append(display.displayLibraryList(savedLibraries[i]))
         }
         console.log(savedContentList);
     }
@@ -161,36 +134,12 @@ savedQuotesBox.addEventListener('click', (e)=>{
 })
 
 
-const displaySavedQuotes = (array)=>{
-    let group = document.createElement('div');
-    group.classList.add('quotes-grouplist')
-    let groupHeader = document.createElement('header');
-    let content = document.createElement('ul');
-    groupHeader.textContent = array.title;
-    for(let i=0; i<array.quotes.length;i++){
-        let list = document.createElement('li');
-        let quote = document.createElement('div');
-        let author = document.createElement('div');
-
-        list.classList.add('previous-quotes-list');
-        quote.textContent = array.quotes[i][0];
-        author.textContent = array.quotes[i][1];
-        quote.classList.add('previous-quote');
-        author.classList.add('quote-author');
-
-        list.append(quote, author)
-        content.appendChild(list);
-    }
-    group.append(groupHeader, content);
-    return group;
-}
-
 moreQuotes.addEventListener('click', ()=>{
     quoteLibraryList.style.display = 'flex';
 
     if(isSavedDisplayed === false){
        for(let i=0; i<savedLibraries.length;i++){
-           const groupList = displaySavedQuotes(savedLibraries[i]);
+           const groupList = display.displaySavedQuotes(savedLibraries[i]);
            console.log(groupList);
            quoteLibraryList.append(groupList);
         }
@@ -219,7 +168,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         for(let i=0;i<storedQuotes.length;i++){
             if(quoteList.children.length <= 4){
                 quoteCollection.push(storedQuotes[i]);
-                const list = displayQuotes(quoteCollection[i]);
+                const list = display.displayQuotes(quoteCollection[i]);
                 const childToRemove = quoteList.children[3];
                 if(quoteList.children.length <= 3){
                     quoteList.prepend(list);
@@ -233,7 +182,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(storedLikedQuotes){
         for(let i=0;i<storedLikedQuotes.length;i++){
             likedQuoteCollection.push(storedLikedQuotes[i]);
-            const list = displayQuotes(likedQuoteCollection[i]);
+            const list = display.displayQuotes(likedQuoteCollection[i]);
             const childToRemove = likedQuotes.children[2];
             if(likedQuotes.children.length <= 2){
                 likedQuotes.prepend(list);
@@ -268,7 +217,7 @@ const mainFunc = ()=>{
                 }
                 localStorage.setItem('quotes', '');
                 localStorage.setItem('quotes', JSON.stringify(quoteCollection));
-                const list = displayQuotes(quoteCollection[0]);
+                const list = display.displayQuotes(quoteCollection[0]);
                 const childToRemove = quoteList.children[3];
                 if(quoteList.children.length <= 3){
                     quoteList.prepend(list);
@@ -353,22 +302,13 @@ const mainFunc = ()=>{
         quoteData();
 }
 
-// things that happen when the 'More' button under Liked Quotes is Clicked
-const displayLikedQuotes = ()=>{
-    likedQuotesBox.style.display = 'flex';
-    overlay.style.display = 'block';
-    likedQuotesList.innerHTML = ''
-    console.log('More Liked QUotes', likedQuoteCollection, likedQuotesList)
-    for(let i=0; i < likedQuoteCollection.length; i++){
-        const list = displayQuotes(likedQuoteCollection[i]);
-        likedQuotesList.prepend(list);
-    }
-}
-document.querySelector('.close-liked-box').addEventListener('click', ()=>{
-    likedQuotesBox.style.display = 'none';
-    document.querySelector('.overlay').style.display = 'none';
+expandLikes.addEventListener('click',  ()=>{
+    display.displayLikedQuotes(likedQuoteCollection);
+});
+const closeLikedBox = document.querySelector('.close-liked-box');
+closeLikedBox.addEventListener('click', ()=>{
+    display.normalMode_liked();
 })
-expandLikes.addEventListener('click', displayLikedQuotes)
 
 
 mainBtn.addEventListener('click', mainFunc);
