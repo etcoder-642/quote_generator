@@ -1,20 +1,12 @@
 import { display } from "./display";
+import { responder } from "./service";
 
 export const logic = (() => {
     const YOUR_API_KEY = `A+qse2m8Q7aY66TvOpMbkg==d1lgmBApcvvuZIRr`;
     const url = `https://api.api-ninjas.com/v2/`;
 
-    const quote = document.querySelector('.quote');
-    const author = document.querySelector('.author');
     const inputValue = document.querySelector('.input-value');
-    const categories = document.querySelector('.categories');
-    const quoteList = document.querySelector('.quote-list');
     const selectCategory = document.querySelector('.select-category');
-
-    const quoteCollection = [];
-
-    let isLiked = false;
-    let isSaved = false;
 
     return {
 
@@ -31,7 +23,6 @@ export const logic = (() => {
                 );
                 const responseData = await response.json();
                 return responseData;
-                logic.responder(responseData);
             } else if (selectCategory.value != '' && inputValue.value === '') {
                 const response = await fetch(
                     `${url}quotes?categories=${selectCategory.value}`,
@@ -44,7 +35,6 @@ export const logic = (() => {
                 );
                 const responseData = await response.json();
                 return responseData;
-                logic.responder(responseData);
 
             } else if (selectCategory.value === '' && inputValue.value != '') {
                 const response = await fetch(
@@ -58,7 +48,6 @@ export const logic = (() => {
                 );
                 const responseData = await response.json();
                 return responseData;
-                logic.responder(responseData);
             }
             else {
                 const response = await fetch(
@@ -71,12 +60,8 @@ export const logic = (() => {
                     }
                 );
                 const responseData = await response.json();
-                return responseData
-                logic.responder(responseData);
+                return responseData;
             }
-        },
-        get quoteCollection() {
-            return quoteCollection;
         }
     }
 })()

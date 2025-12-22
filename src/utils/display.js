@@ -1,3 +1,7 @@
+import Toastify from 'toastify-js';
+import "toastify-js/src/toastify.css";
+import { service } from './service';
+
 export const display = (() => {
     const savedQuotesBox = document.querySelector('.saved-quotes-box');
     const overlay = document.querySelector('.overlay');
@@ -8,6 +12,7 @@ export const display = (() => {
     const heartIcon = document.querySelector('.heart-icon');
     const bookmarkIcon = document.querySelector('.bookmark-icon');
     const bottomIcons = document.querySelector('.bottom-icons');
+    const savedContentList = document.querySelector('.saved-content-list');
 
     return {
         popBottomIcon: function() {
@@ -106,6 +111,9 @@ export const display = (() => {
                 secondElement.prepend(element);
             }
         },
+        addLibraryList: function (list) {
+            quoteLibraryList.append(list);
+        },
         removeLikedQuote: function () {
             const childToRemove = likedQuotes.children[0];
             childToRemove.remove();
@@ -128,6 +136,12 @@ export const display = (() => {
                     background: 'var(--secondary-color)',
                 }
             }).showToast();
+        },
+        displayLibraryList: function () {
+            savedContentList.innerHTML = '';
+            for (let i = 0; i < service.savedLibraries.length; i++) {
+                display.addLibraryList(savedContentList, service.savedLibraries[i]);
+            }
         }
     }
 })()

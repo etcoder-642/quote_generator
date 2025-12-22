@@ -2,193 +2,76 @@ import "./styles/main.css";
 
 import { display } from "./utils/display";
 import { logic } from "./utils/app";
+import { service } from "./utils/service";
 
-const mainBtn = document.querySelector('.main-btn');
-const quote = document.querySelector('.quote');
-const author = document.querySelector('.author');
-const categories = document.querySelector('.categories');
-const selectCategory = document.querySelector('.select-category');
-const inputValue = document.querySelector('.input-value');
-const bottomIcons = document.querySelector('.bottom-icons');
-const quoteList = document.querySelector('.quote-list');
-const likedQuotes = document.querySelector('.liked-quotes');
-const heartIcon = document.querySelector('.heart-icon');
-const bookmarkIcon = document.querySelector('.bookmark-icon');
-const expandLikes = document.querySelector('.expand-likes');
-const savedQuotesBox = document.querySelector('.saved-quotes-box');
-const savedLibraryBtn = document.querySelector('.saved-library-btn');
-const savedContentList = document.querySelector('.saved-content-list');
-const moreQuotes = document.querySelector('.more-saved-quotes');
-const quoteLibraryList = document.querySelector('.quote-library-list');
-
-let libraryTitles = document.querySelector('.library-title');
-let libraryDesc = document.querySelector('.library-desc');
-
-let isLiked = false;
-let isSaved = false;
-let isSavedDisplayed = false;
-const quoteCollection = [];
-const likedQuoteCollection = [];
-const savedLibraries = [];
-
-
+// things that must be done when the page is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    service.initialize();
+})
 
 // Things that happen when a quote is liked
 
-heartIcon.addEventListener('click', ()=>{
-    heartIcon.classList.toggle('solid');
-    isLiked = !isLiked;
-    if(isLiked === true){
-        likedQuoteCollection.unshift(quoteCollection[0]);
-        const list = display.displayQuotes(likedQuoteCollection[0]);
-        display.addLikedQuotes(list);
-    }else{
-        likedQuoteCollection.splice(likedQuoteCollection.indexOf(quoteCollection[0]),1);
-        display.removeLikedQuote();
-    }
-    localStorage.setItem('likedQuotes', '');
-    localStorage.setItem('likedQuotes', JSON.stringify(likedQuoteCollection));
-})
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('heart-icon')) {
+        display.toggleLiked();
+        service.invertLikeBool();
 
-
-// Things that happen 
-
-bookmarkIcon.addEventListener('click', ()=>{
-    isSaved = !isSaved;
-
-    if(isSaved === true){
-        console.log(savedLibraries);
-        display.popUpMode_bookmark();
-
-        savedContentList.innerHTML = ''
-        for(let i=0;i<savedLibraries.length;i++){
-            display.addLibraryList(savedContentList, savedLibraries[i]);
+        if (service.isLiked === true) {
+            service.addElement_liked();
+            const list = display.displayQuotes(service.likedQuoteCollection[0]);
+            display.addLikedQuotes(list);
+        } else {
+            service.removeElement_liked();
+            display.removeLikedQuote();
         }
-    }
-});
+        service.saveLocal_liked();
+    } else if (e.target.classList.contains('bookmark-icon')) {
+        service.invertSavedBool();
 
+        if (service.isSaved === true) {
+            console.log(service.savedLibraries);
+            display.popUpMode_bookmark();
 
-savedLibraryBtn.addEventListener('click', (e)=>{
-    if(libraryDesc.checkValidity() && libraryTitles.checkValidity()){
-        e.preventDefault();
-        savedLibraries.push({
-            'id': crypto.randomUUID(),
-            'title': libraryTitles.value,
-            'description': libraryDesc.value,
-            'quotes': []
-        })
-    }
-    localStorage.setItem('savedItems', '');
-    localStorage.setItem('savedItems', JSON.stringify(savedLibraries));
-})
+            display.displayLibraryList();
 
-
-document.querySelector('.close-saved-box').addEventListener('click', ()=>{
-    display.normalMode_bookmark();
-
-    if(isSaved){
-        display.toggleBookmark();
-        isSaved = !isSaved;
-    }
-    
-})
-
-
-savedQuotesBox.addEventListener('click', (e)=>{
-    if(e.target.classList.contains('saved-quotes-li')){
-    for(let i=0;i<savedLibraries.length;i++){
-        if(savedLibraries[i].id === e.target.dataset.elementId){
-            savedLibraries[i].quotes.push(quoteCollection[0]);
         }
-    }
-    localStorage.setItem('savedItems', '');
-    localStorage.setItem('savedItems', JSON.stringify(savedLibraries));
+    } else if (e.target.classList.contains('saved-library-btn')) {
+        service.createLibrary(e);
+        service.saveLocal_library();
+    } else if (e.target.classList.contains('close-saved-box')) {
+        display.normalMode_bookmark();
 
-    display.normalMode_bookmark();
-    display.displayToast();
-    }
-})
-
-
-moreQuotes.addEventListener('click', ()=>{
-    display.popUpMode_list();
-
-    if(isSavedDisplayed === false){
-       for(let i=0; i<savedLibraries.length;i++){
-           const groupList = display.displaySavedQuotes(savedLibraries[i]);
-           console.log(groupList);
-           quoteLibraryList.append(groupList);
+        if (service.isSaved) {
+            display.toggleBookmark();
+            service.invertSavedBool();
         }
-    }
-    isSavedDisplayed = true;
-})
+    } else if (e.target.classList.contains('saved-quotes-box')) {
+        if (e.target.classList.contains('saved-quotes-li')) {
+            service.assignLibraryElement(e);
+            service.saveLocal_library();
 
-document.querySelector('.close-library-box').addEventListener('click', ()=>{
-    display.normalMode_list();
-})
-
-
-// things that must be done when the page is loaded
-document.addEventListener('DOMContentLoaded', ()=>{
-    let storedQuotes = [];
-    let storedLikedQuotes = [];
-    let storedSavedQuotes = [];
-    storedQuotes = JSON.parse(localStorage.getItem('quotes'));
-    storedLikedQuotes = JSON.parse(localStorage.getItem('likedQuotes'));
-    storedSavedQuotes = JSON.parse(localStorage.getItem('savedItems'));
-
-    if(storedQuotes){
-        for(let i=0;i<storedQuotes.length;i++){
-            if(quoteList.children.length <= 4){
-                quoteCollection.push(storedQuotes[i]);
-                const list = display.displayQuotes(quoteCollection[i]);
-                const childToRemove = quoteList.children[3];
-                if(quoteList.children.length <= 3){
-                    quoteList.prepend(list);
-                }else{
-                    childToRemove.remove();
-                    quoteList.prepend(list);
-                }
-            }            
+            display.normalMode_bookmark();
+            display.displayToast();
         }
-    }
-    if(storedLikedQuotes){
-        for(let i=0;i<storedLikedQuotes.length;i++){
-            likedQuoteCollection.push(storedLikedQuotes[i]);
-            const list = display.displayQuotes(likedQuoteCollection[i]);
-            const childToRemove = likedQuotes.children[2];
-            if(likedQuotes.children.length <= 2){
-                likedQuotes.prepend(list);
-            }else{
-                childToRemove.remove();
-                likedQuotes.prepend(list);
+    } else if (e.target.classList.contains('more-saved-quotes')) {
+        display.popUpMode_list();
+
+        if (service.isSavedDisplayed === false) {
+            for (let i = 0; i < service.savedLibraries.length; i++) {
+                const groupList = display.displaySavedQuotes(service.savedLibraries[i]);
+                console.log(groupList);
+                display.addLibrary(groupList);
             }
-        };
-    }
-    if(storedSavedQuotes){
-        for(let i=0;i<storedSavedQuotes.length;i++){
-            savedLibraries.push(storedSavedQuotes[i]);
         }
+        service.invertSavedDisplayed();
+    } else if (e.target.classList.contains('close-library-box')) {
+        display.normalMode_list();
+    } else if (e.target.classList.contains('expand-likes')) {
+        display.displayLikedQuotes(service.likedQuoteCollection);
+    } else if (e.target.classList.contains('close-liked-box')) {
+        display.normalMode_liked();
+    } else if (e.target.classList.contains('main-btn')) {
+        service.responder(logic.response);
     }
-})
-
-// Things that happen when the main 'Generate Quote' is clicked
-const mainFunc = ()=>{
-
-        quoteData();
-}
-
-expandLikes.addEventListener('click',  ()=>{
-    display.displayLikedQuotes(likedQuoteCollection);
-});
-const closeLikedBox = document.querySelector('.close-liked-box');
-closeLikedBox.addEventListener('click', ()=>{
-    display.normalMode_liked();
-})
-
-
-mainBtn.addEventListener('click', mainFunc);
-selectCategory.addEventListener('click', ()=>{
-    console.log(selectCategory.value);
 })
 
