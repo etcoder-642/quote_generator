@@ -7,8 +7,12 @@ export const display = (() => {
     const likedQuotes = document.querySelector('.liked-quotes');
     const heartIcon = document.querySelector('.heart-icon');
     const bookmarkIcon = document.querySelector('.bookmark-icon');
+    const bottomIcons = document.querySelector('.bottom-icons');
 
     return {
+        popBottomIcon: function() {
+            bottomIcons.style.display = 'flex';
+        },
         popUpMode_list: function () {
             quoteLibraryList.style.display = 'flex';
             overlay.style.display = 'block';
@@ -93,13 +97,13 @@ export const display = (() => {
                 likedQuotesList.prepend(list);
             }
         },
-        addLikedQuotes: function (element) {
-            const childToRemove = likedQuotes.children[2];
-            if (likedQuotes.children.length <= 2) {
-                likedQuotes.prepend(element);
+        addLikedQuotes: function (element, secondElement, num) {
+            const childToRemove = secondElement.children[num];
+            if (secondElement.children.length <= num) {
+                secondElement.prepend(element);
             } else {
                 childToRemove.remove();
-                likedQuotes.prepend(element);
+                secondElement.prepend(element);
             }
         },
         removeLikedQuote: function () {
