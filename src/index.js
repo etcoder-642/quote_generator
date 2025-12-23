@@ -18,8 +18,7 @@ document.addEventListener('click', (e) => {
 
         if (service.isLiked === true) {
             service.addElement_liked();
-            const list = display.displayQuotes(service.likedQuoteCollection[0]);
-            display.addLikedQuotes(list);
+            service.addLikedQuote();
         } else {
             service.removeElement_liked();
             display.removeLikedQuote();
@@ -31,28 +30,21 @@ document.addEventListener('click', (e) => {
         if (service.isSaved === true) {
             console.log(service.savedLibraries);
             display.popUpMode_bookmark();
-
-            display.displayLibraryList();
+            display.displayContentList();
 
         }
     } else if (e.target.classList.contains('saved-library-btn')) {
         service.createLibrary(e);
-        service.saveLocal_library();
     } else if (e.target.classList.contains('close-saved-box')) {
         display.normalMode_bookmark();
+        display.toggleBookmark();
+        service.invertSavedBool();
+    } else if (e.target.classList.contains('saved-quotes-li')) {
+        service.assignLibraryElement(e);
+        service.saveLocal_library();
 
-        if (service.isSaved) {
-            display.toggleBookmark();
-            service.invertSavedBool();
-        }
-    } else if (e.target.classList.contains('saved-quotes-box')) {
-        if (e.target.classList.contains('saved-quotes-li')) {
-            service.assignLibraryElement(e);
-            service.saveLocal_library();
-
-            display.normalMode_bookmark();
-            display.displayToast();
-        }
+        display.normalMode_bookmark();
+        display.displayToast();
     } else if (e.target.classList.contains('more-saved-quotes')) {
         display.popUpMode_list();
 
@@ -71,7 +63,11 @@ document.addEventListener('click', (e) => {
     } else if (e.target.classList.contains('close-liked-box')) {
         display.normalMode_liked();
     } else if (e.target.classList.contains('main-btn')) {
-        service.responder(logic.response);
+        logic.response().then(responseData => {
+            service.responder(responseData);
+        })
+    } else {
+        console.log("you actually clicked on:", e.target);
     }
 })
 

@@ -159,6 +159,10 @@ li {
     stroke: var(--primary-color);
 }
 
+.heart-icon path, .bookmark-icon path {
+    pointer-events: none;
+}
+
 .sidebar {
     padding: 32px;
     padding-top: 64px;

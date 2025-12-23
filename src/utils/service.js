@@ -18,20 +18,21 @@ export const service = (() => {
         likedQuoteCollection: [],
         quoteCollection: [],
         savedLibraries: [],
-        invertLikeBool: function() {
+        invertLikeBool: function () {
             service.isLiked = !service.isLiked;
         },
-        invertSavedBool: function() {
+        invertSavedBool: function () {
             service.isSaved = !service.isSaved;
         },
-        invertSavedDisplayed: function() {
+        invertSavedDisplayed: function () {
             service.isSavedDisplayed = true;
         },
-        addElement_liked: function() {
+        addElement_liked: function () {
             service.likedQuoteCollection.unshift(service.quoteCollection[0]);
+            console.log('Liked QuoteCollection', service.likedQuoteCollection)
         },
-        removeElement_liked: function() {
-            service.likedQuoteCollection.splice(service.likedQuoteCollection.indexOf(service.quoteCollection[0]),1);
+        removeElement_liked: function () {
+            service.likedQuoteCollection.splice(service.likedQuoteCollection.indexOf(service.quoteCollection[0]), 1);
         },
         saveLocal_liked: function () {
             localStorage.setItem('likedQuotes', '');
@@ -40,6 +41,21 @@ export const service = (() => {
         saveLocal_library: function () {
             localStorage.setItem('savedItems', '');
             localStorage.setItem('savedItems', JSON.stringify(service.savedLibraries));
+        },
+        saveLocal_saved: function () {
+            localStorage.setItem('quotes', '');
+            localStorage.setItem('quotes', JSON.stringify(service.quoteCollection));
+
+        },
+        addLikedQuotes: function () {
+            for (let i = 0; i < service.likedQuoteCollection.length; i++) {
+                const list = display.displayQuotes(service.likedQuoteCollection[i]);
+                display.addLikedQuotes(list, likedQuotes, 2);
+            }
+        },
+        addLikedQuote: function () {
+            const list = display.displayQuotes(service.likedQuoteCollection[0]);
+            display.addLikedQuotes(list, likedQuotes, 2);
         },
         createLibrary: function (element) {
             if (libraryDesc.checkValidity() && libraryTitles.checkValidity()) {
@@ -50,12 +66,22 @@ export const service = (() => {
                     'description': libraryDesc.value,
                     'quotes': []
                 })
+                console.log(service.savedLibraries);
+                // display.normalMode_bookmark();
+                service.saveLocal_library();
+                display.displayContentList();
+                display.resetInputBox();
+            }else{
+                alert('Invalid Values Provided');
             }
         },
         assignLibraryElement: function (element) {
             for (let i = 0; i < service.savedLibraries.length; i++) {
                 if (service.savedLibraries[i].id === element.target.dataset.elementId) {
                     service.savedLibraries[i].quotes.push(service.quoteCollection[0]);
+                    console.log('saved Library', service.savedLibraries[i]);
+                    console.log('element', element.target)
+
                 }
             };
         },
@@ -79,8 +105,7 @@ export const service = (() => {
             if (storedLikedQuotes) {
                 for (let i = 0; i < storedLikedQuotes.length; i++) {
                     service.likedQuoteCollection.push(storedLikedQuotes[i]);
-                    const list = display.displayQuotes(service.likedQuoteCollection[i]);
-                    display.addLikedQuotes(list, likedQuotes, 2);
+                    service.addLikedQuotes(2);
                 };
             }
             if (storedSavedQuotes) {
@@ -102,14 +127,13 @@ export const service = (() => {
                 author.innerHTML = data[0].author;
                 categories.innerHTML += data[0].categories;
             }
-            bottomIcons.style.display = 'flex';
+            display.popBottomIcon();
             service.quoteCollection.unshift([data[0].quote, data[0].author, crypto.randomUUID(), false]);
-            if (quoteCollection.length >= 4) {
-                quoteCollection.splice(4)
+            if (service.quoteCollection.length >= 4) {
+                service.quoteCollection.splice(4);
             }
-            localStorage.setItem('quotes', '');
-            localStorage.setItem('quotes', JSON.stringify(quoteCollection));
-            const list = display.displayQuotes(quoteCollection[0]);
+            service.saveLocal_saved();
+            const list = display.displayQuotes(service.quoteCollection[0]);
             const childToRemove = quoteList.children[3];
             if (quoteList.children.length <= 3) {
                 quoteList.prepend(list);
@@ -117,16 +141,16 @@ export const service = (() => {
                 childToRemove.remove();
                 quoteList.prepend(list);
             }
-            console.log('Quote Collection:', quoteCollection);
+            console.log('Quote Collection:', service.quoteCollection);
 
-            if (service.isLiked === true) {
-                heartIcon.classList.toggle('solid');
-                service.isLiked = !service.isLiked;
-            }
-            if (service.isSaved === true) {
-                bookmarkIcon.classList.toggle('solid');
-                service.isSaved = !service.isSaved;
-            }
+            // if (service.isLiked === true) {
+            //     heartIcon.classList.toggle('solid');
+            //     service.isLiked = !service.isLiked;
+            // }
+            // if (service.isSaved === true) {
+            //     bookmarkIcon.classList.toggle('solid');
+            //     service.isSaved = !service.isSaved;
+            // }
         }
     }
 })()

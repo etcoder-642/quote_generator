@@ -14,7 +14,16 @@ export const display = (() => {
     const bottomIcons = document.querySelector('.bottom-icons');
     const savedContentList = document.querySelector('.saved-content-list');
 
+    
+    let libraryTitles = document.querySelector('.library-title');
+    let libraryDesc = document.querySelector('.library-desc');
+
+
     return {
+        resetInputBox: function() {
+            libraryDesc.value.textContent = '';
+            libraryTitles.textContent = '';
+        },
         popBottomIcon: function() {
             bottomIcons.style.display = 'flex';
         },
@@ -111,10 +120,11 @@ export const display = (() => {
                 secondElement.prepend(element);
             }
         },
-        addLibraryList: function (list) {
-            quoteLibraryList.append(list);
-        },
+        // addLibraryList: function (list) {
+        //     quoteLibraryList.append(list);
+        // },
         removeLikedQuote: function () {
+            console.log('Liked Quotes Here',likedQuotes);
             const childToRemove = likedQuotes.children[0];
             childToRemove.remove();
         },
@@ -124,9 +134,9 @@ export const display = (() => {
         toggleLiked: function () {
             heartIcon.classList.toggle('solid');
         },
-        addLibraryList: function (list, array) {
-            list.append(display.displayLibraryList(array[i]))
-        },
+        // addLibraryList: function (list, array) {
+        //     list.append(display.displayLibraryList(array[i]))
+        // },
         displayToast: function () {
             Toastify({
                 text: 'Saved Successfully!',
@@ -137,10 +147,10 @@ export const display = (() => {
                 }
             }).showToast();
         },
-        displayLibraryList: function () {
+        displayContentList: function () {
             savedContentList.innerHTML = '';
             for (let i = 0; i < service.savedLibraries.length; i++) {
-                display.addLibraryList(savedContentList, service.savedLibraries[i]);
+                savedContentList.append(display.displayLibraryList(service.savedLibraries[i]));
             }
         }
     }

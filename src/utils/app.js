@@ -1,6 +1,3 @@
-import { display } from "./display";
-import { responder } from "./service";
-
 export const logic = (() => {
     const YOUR_API_KEY = `A+qse2m8Q7aY66TvOpMbkg==d1lgmBApcvvuZIRr`;
     const url = `https://api.api-ninjas.com/v2/`;
@@ -10,7 +7,7 @@ export const logic = (() => {
 
     return {
 
-        response: async function quoteData() {
+        response: async function() {
             if (selectCategory.value != '' && inputValue.value != '') {
                 const response = await fetch(
                     `${url}quotes?categories=${selectCategory.value}&author=${inputValue.value}`,
@@ -22,6 +19,7 @@ export const logic = (() => {
                     }
                 );
                 const responseData = await response.json();
+                console.log(responseData);
                 return responseData;
             } else if (selectCategory.value != '' && inputValue.value === '') {
                 const response = await fetch(
@@ -34,6 +32,7 @@ export const logic = (() => {
                     }
                 );
                 const responseData = await response.json();
+                console.log(responseData);
                 return responseData;
 
             } else if (selectCategory.value === '' && inputValue.value != '') {
@@ -47,6 +46,7 @@ export const logic = (() => {
                     }
                 );
                 const responseData = await response.json();
+                console.log(responseData);
                 return responseData;
             }
             else {
@@ -60,6 +60,7 @@ export const logic = (() => {
                     }
                 );
                 const responseData = await response.json();
+                console.log(responseData);
                 return responseData;
             }
         }
