@@ -25,13 +25,11 @@ document.addEventListener('click', (e) => {
         }
         service.saveLocal_liked();
     } else if (e.target.classList.contains('bookmark-icon')) {
-        service.invertSavedBool();
-
-        if (service.isSaved === true) {
-            console.log(service.savedLibraries);
+        if (service.isSaved === false) {
+            service.invertSavedBool();
+            display.toggleBookmark();
             display.popUpMode_bookmark();
             display.displayContentList();
-
         }
     } else if (e.target.classList.contains('saved-library-btn')) {
         service.createLibrary(e);
@@ -45,13 +43,13 @@ document.addEventListener('click', (e) => {
 
         display.normalMode_bookmark();
         display.displayToast();
+        e.stopPropagation();
     } else if (e.target.classList.contains('more-saved-quotes')) {
         display.popUpMode_list();
 
         if (service.isSavedDisplayed === false) {
             for (let i = 0; i < service.savedLibraries.length; i++) {
                 const groupList = display.displaySavedQuotes(service.savedLibraries[i]);
-                console.log(groupList);
                 display.addLibrary(groupList);
             }
         }
@@ -66,8 +64,6 @@ document.addEventListener('click', (e) => {
         logic.response().then(responseData => {
             service.responder(responseData);
         })
-    } else {
-        console.log("you actually clicked on:", e.target);
     }
 })
 

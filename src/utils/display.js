@@ -21,8 +21,8 @@ export const display = (() => {
 
     return {
         resetInputBox: function() {
-            libraryDesc.value.textContent = '';
-            libraryTitles.textContent = '';
+            libraryDesc.value = '';
+            libraryTitles.value = '';
         },
         popBottomIcon: function() {
             bottomIcons.style.display = 'flex';
@@ -120,9 +120,9 @@ export const display = (() => {
                 secondElement.prepend(element);
             }
         },
-        // addLibraryList: function (list) {
-        //     quoteLibraryList.append(list);
-        // },
+        addLibrary: function (list) {
+            quoteLibraryList.append(list);
+        },
         removeLikedQuote: function () {
             console.log('Liked Quotes Here',likedQuotes);
             const childToRemove = likedQuotes.children[0];
@@ -130,6 +130,7 @@ export const display = (() => {
         },
         toggleBookmark: function () {
             bookmarkIcon.classList.toggle('solid');
+            console.log('gotcha', bookmarkIcon);
         },
         toggleLiked: function () {
             heartIcon.classList.toggle('solid');

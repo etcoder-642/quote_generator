@@ -29,7 +29,6 @@ export const service = (() => {
         },
         addElement_liked: function () {
             service.likedQuoteCollection.unshift(service.quoteCollection[0]);
-            console.log('Liked QuoteCollection', service.likedQuoteCollection)
         },
         removeElement_liked: function () {
             service.likedQuoteCollection.splice(service.likedQuoteCollection.indexOf(service.quoteCollection[0]), 1);
@@ -66,7 +65,6 @@ export const service = (() => {
                     'description': libraryDesc.value,
                     'quotes': []
                 })
-                console.log(service.savedLibraries);
                 // display.normalMode_bookmark();
                 service.saveLocal_library();
                 display.displayContentList();
@@ -79,9 +77,6 @@ export const service = (() => {
             for (let i = 0; i < service.savedLibraries.length; i++) {
                 if (service.savedLibraries[i].id === element.target.dataset.elementId) {
                     service.savedLibraries[i].quotes.push(service.quoteCollection[0]);
-                    console.log('saved Library', service.savedLibraries[i]);
-                    console.log('element', element.target)
-
                 }
             };
         },
@@ -141,16 +136,6 @@ export const service = (() => {
                 childToRemove.remove();
                 quoteList.prepend(list);
             }
-            console.log('Quote Collection:', service.quoteCollection);
-
-            // if (service.isLiked === true) {
-            //     heartIcon.classList.toggle('solid');
-            //     service.isLiked = !service.isLiked;
-            // }
-            // if (service.isSaved === true) {
-            //     bookmarkIcon.classList.toggle('solid');
-            //     service.isSaved = !service.isSaved;
-            // }
         }
     }
 })()
