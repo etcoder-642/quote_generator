@@ -1,5 +1,5 @@
 export const logic = (() => {
-    const YOUR_API_KEY = `A+qse2m8Q7aY66TvOpMbkg==d1lgmBApcvvuZIRr`;
+    const YOUR_API_KEY = process.env.API_KEY;
     const url = `https://api.api-ninjas.com/v2/`;
 
     const inputValue = document.querySelector('.input-value');
