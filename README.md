@@ -19,19 +19,9 @@ Visit the live application here: [https://etcoder-642.github.io/quote_generator]
 
 ## 📸 Visual Demo
 
-*Replace the following placeholders with your actual screenshots.*
 
 ### 1. Main Dashboard
-![Main Dashboard](assets/screenshots/main-dashboard.png)
-*The primary interface where you generate and filter quotes.*
-
-### 2. Library Management
-![Library Management](assets/screenshots/library-manager.png)
-*Creating and organizing quotes into custom categories.*
-
-### 3. Liked Quotes
-![Liked Quotes](assets/screenshots/liked-quotes.png)
-*Viewing the collection of your favorite quotes.*
+<img width="1909" height="872" alt="image" src="https://github.com/user-attachments/assets/e2bdeeff-8396-4974-9cd7-643a1a3ce6e4" />
 
 ---
 
