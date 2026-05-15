@@ -24,6 +24,10 @@ export const display = (() => {
             libraryDesc.value = '';
             libraryTitles.value = '';
         },
+        resetIcons: function() {
+            heartIcon.classList.remove('solid');
+            bookmarkIcon.classList.remove('solid');
+        },
         popBottomIcon: function() {
             bottomIcons.style.display = 'flex';
         },
@@ -36,7 +40,7 @@ export const display = (() => {
             overlay.style.display = 'none';
         },
         popUpMode_bookmark: function () {
-            savedQuotesBox.style.display = 'block';
+            savedQuotesBox.style.display = 'flex';
             overlay.style.display = 'block';
         },
         normalMode_bookmark: function () {
@@ -122,6 +126,13 @@ export const display = (() => {
         },
         addLibrary: function (list) {
             quoteLibraryList.append(list);
+        },
+        renderFullLibraryList: function (libraries) {
+            quoteLibraryList.innerHTML = '<div class="close-library-box">&times;</div>';
+            for (let i = 0; i < libraries.length; i++) {
+                const groupList = display.displaySavedQuotes(libraries[i]);
+                display.addLibrary(groupList);
+            }
         },
         removeLikedQuote: function () {
             console.log('Liked Quotes Here',likedQuotes);

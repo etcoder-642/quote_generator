@@ -79,6 +79,7 @@ export const service = (() => {
                     service.savedLibraries[i].quotes.push(service.quoteCollection[0]);
                 }
             };
+            service.isSaved = false;
         },
         initialize: function () {
             let storedQuotes = [];
@@ -90,10 +91,10 @@ export const service = (() => {
 
             if (storedQuotes) {
                 for (let i = 0; i < storedQuotes.length; i++) {
-                    if (quoteList.children.length <= 4) {
+                    if (quoteList.children.length <= 3) {
                         service.quoteCollection.push(storedQuotes[i]);
                         const list = display.displayQuotes(service.quoteCollection[i]);
-                        display.addLikedQuotes(list, quoteList, 3);
+                        display.addLikedQuotes(list, quoteList, 2);
                     }
                 }
             }
@@ -120,20 +121,37 @@ export const service = (() => {
             } else {
                 quote.textContent = data[0].quote;
                 author.innerHTML = data[0].author;
-                categories.innerHTML += data[0].categories;
+                
+                let cats = data[0].categories || "";
+                if (cats.length > 30 && cats.includes(',')) {
+                    let catArray = cats.split(',');
+                    let shortCats = catArray[0];
+                    for (let i = 1; i < catArray.length; i++) {
+                        if ((shortCats + ',' + catArray[i]).length > 30) {
+                            shortCats += '...';
+                            break;
+                        }
+                        shortCats += ',' + catArray[i];
+                    }
+                    cats = shortCats;
+                }
+                categories.innerHTML = cats;
             }
             display.popBottomIcon();
+            service.isLiked = false;
+            service.isSaved = false;
+            display.resetIcons();
             service.quoteCollection.unshift([data[0].quote, data[0].author, crypto.randomUUID(), false]);
             if (service.quoteCollection.length >= 4) {
-                service.quoteCollection.splice(4);
+                service.quoteCollection.splice(3);
             }
             service.saveLocal_saved();
             const list = display.displayQuotes(service.quoteCollection[0]);
-            const childToRemove = quoteList.children[3];
-            if (quoteList.children.length <= 3) {
+            const childToRemove = quoteList.children[2];
+            if (quoteList.children.length <= 2) {
                 quoteList.prepend(list);
             } else {
-                childToRemove.remove();
+                if (childToRemove) childToRemove.remove();
                 quoteList.prepend(list);
             }
         }

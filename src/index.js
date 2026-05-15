@@ -7,11 +7,22 @@ import { service } from "./utils/service";
 // things that must be done when the page is loaded
 document.addEventListener('DOMContentLoaded', () => {
     service.initialize();
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
 })
 
 // Things that happen when a quote is liked
 
 document.addEventListener('click', (e) => {
+    const themeBtn = e.target.closest('.theme-toggle-btn');
+    if (themeBtn) {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        return;
+    }
+
     if (e.target.classList.contains('heart-icon')) {
         display.toggleLiked();
         service.invertLikeBool();
@@ -46,14 +57,7 @@ document.addEventListener('click', (e) => {
         e.stopPropagation();
     } else if (e.target.classList.contains('more-saved-quotes')) {
         display.popUpMode_list();
-
-        if (service.isSavedDisplayed === false) {
-            for (let i = 0; i < service.savedLibraries.length; i++) {
-                const groupList = display.displaySavedQuotes(service.savedLibraries[i]);
-                display.addLibrary(groupList);
-            }
-        }
-        service.invertSavedDisplayed();
+        display.renderFullLibraryList(service.savedLibraries);
     } else if (e.target.classList.contains('close-library-box')) {
         display.normalMode_list();
     } else if (e.target.classList.contains('expand-likes')) {
