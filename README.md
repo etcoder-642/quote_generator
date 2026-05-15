@@ -21,7 +21,7 @@ Visit the live application here: [https://etcoder-642.github.io/quote_generator]
 
 
 ### 1. Main Dashboard
-<img width="1909" height="872" alt="image" src="https://github.com/user-attachments/assets/e2bdeeff-8396-4974-9cd7-643a1a3ce6e4" />
+<img width="1889" height="879" alt="image" src="https://github.com/user-attachments/assets/89a080b0-37a1-4dd9-bb81-4ebe1331918d" />
 
 ---
 
